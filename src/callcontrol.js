@@ -25,6 +25,46 @@ function XiVOCallControl(host) {
         return data.responseJSON;
     }
 
+    this.get_incoming_calls = function(token, incoming_id) {
+        client = this.connect();
+
+        client.add('incoming', {
+            ajax: { async: false,
+                    headers: { 'X-Auth-Token': token }
+                  }
+        });
+
+        client.incoming.add('calls', {
+            stripTrailingSlash: true,
+            isSingle: true
+        });
+
+        data = client.incoming.calls.read(incoming_id)
+                                    .done(function (data) {});
+
+        return data.responseJSON;
+    }
+
+    this.get_holding_calls = function(token, holding_id) {
+        client = this.connect();
+
+        client.add('hold', {
+            ajax: { async: false,
+                    headers: { 'X-Auth-Token': token }
+                  }
+        });
+
+        client.hold.add('calls', {
+            stripTrailingSlash: true,
+            isSingle: true
+        });
+
+        data = client.hold.calls.read(holding_id)
+                                .done(function (data) {});
+
+        return data.responseJSON;
+    }
+
     this.hangup = function(token, call_id) {
         client = this.connect();
 
@@ -55,5 +95,45 @@ function XiVOCallControl(host) {
          });
 
         client.calls.answer.create(call_id, source);
+    }
+
+    this.create_hold_queue = function(token, holding_id) {
+        client = this.connect();
+
+        client.add('hold', {
+            stripTrailingSlash: true,
+            stringifyData: true,
+            ajax: { headers: { 'X-Auth-Token': token } }
+        });
+
+        client.hold.create(holding_id, {
+          moh: 'default'
+        });
+    }
+
+    this.hold = function(token, holding_id, call_id) {
+        client = this.connect();
+
+        client.add('hold', {
+            ajax: { headers: { 'X-Auth-Token': token } }
+        });
+
+        client.hold.add('calls', {
+            stripTrailingSlash: true
+        });
+        client.hold.calls.update(holding_id, call_id);
+    }
+
+    this.unhold = function(token, holding_id, call_id) {
+        client = this.connect();
+
+        client.add('incoming', {
+            ajax: { headers: { 'X-Auth-Token': token } }
+        });
+
+        client.incoming.add('calls', {
+            stripTrailingSlash: true
+        });
+        client.incoming.calls.update(holding_id, call_id);
     }
 }

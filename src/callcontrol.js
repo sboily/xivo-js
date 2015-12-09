@@ -124,7 +124,7 @@ function XiVOCallControl(host) {
         client.hold.calls.update(holding_id, call_id);
     }
 
-    this.unhold = function(token, holding_id, call_id) {
+    this.unhold = function(token, incoming_id, call_id) {
         client = this.connect();
 
         client.add('incoming', {
@@ -134,6 +134,6 @@ function XiVOCallControl(host) {
         client.incoming.add('calls', {
             stripTrailingSlash: true
         });
-        client.incoming.calls.update(holding_id, call_id);
+        client.incoming.calls.update(incoming_id, call_id);
     }
 }

@@ -1,6 +1,10 @@
 function XiVOAuth(host) {
     this.host = host;
 
+    $.ajaxSetup({
+      timeout: 3
+    });
+
     this.connect = function(host) {
         host = this.host + "/0.1/"
         return new $.RestClient(host);

@@ -2,7 +2,7 @@ function XiVOAuth(host) {
     this.host = host;
 
     $.ajaxSetup({
-      timeout: 3
+      timeout: 3000
     });
 
     this.connect = function(host) {

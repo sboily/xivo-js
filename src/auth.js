@@ -6,7 +6,7 @@ function XiVOAuth(host) {
         return new $.RestClient(host);
     }
 
-    this.login = function(username, password, backend, expiration, callback) {
+    this.login = function(username, password, backend, expiration, callback, callback_defered) {
         client = this.connect();
 
         if (expiration == null)
@@ -27,10 +27,12 @@ function XiVOAuth(host) {
             expiration: expiration
         }).done(function (data) {
             callback(data);
+        }).fail(function (data) {
+            callback_defered(data);
         });
     }
 
-    this.logout = function(token, callback) {
+    this.logout = function(token, callback, callback_defered) {
         client = this.connect();
 
         client.add('token', {
@@ -41,10 +43,12 @@ function XiVOAuth(host) {
 
         client.token.del(token).done(function(data) {
             callback(data);
+        }).fail(function(data) {
+            callback_defered(data);
         });
     }
 
-    this.backend = function(callback) {
+    this.backend = function(callback, callback_defered) {
         client = this.connect();
 
         client.add('backends', {
@@ -54,6 +58,8 @@ function XiVOAuth(host) {
 
         client.backends.read().done(function(data) {
             callback(data);
+        }).fail(function(data) {
+            callback_defered(data);
         });
     }
 }

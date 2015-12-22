@@ -1,10 +1,6 @@
 function XiVOAuth(host) {
     this.host = host;
 
-    $.ajaxSetup({
-      timeout: 3000
-    });
-
     this.connect = function(host) {
         host = this.host + "/0.1/"
         return new $.RestClient(host);
@@ -41,7 +37,8 @@ function XiVOAuth(host) {
 
         client.add('token', {
             stripTrailingSlash: true,
-            ajax: { headers: { 'X-Auth-Token': token }
+            ajax: { headers: { 
+                      'X-Auth-Token': token }
                   }
         });
 
@@ -57,7 +54,8 @@ function XiVOAuth(host) {
 
         client.add('backends', {
             stripTrailingSlash: true,
-            stringifyData: true
+            stringifyData: true,
+            ajax: { timeout: 3000 }
         });
 
         client.backends.read().done(function(data) {

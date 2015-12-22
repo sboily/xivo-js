@@ -6,7 +6,7 @@ function XiVOAuth(host) {
         return new $.RestClient(host);
     }
 
-    this.login = function(username, password, backend, expiration) {
+    this.login = function(username, password, backend, expiration, callback) {
         client = this.connect();
 
         if (expiration == null)
@@ -18,7 +18,6 @@ function XiVOAuth(host) {
         client.add('token', {
             stripTrailingSlash: true,
             stringifyData: true,
-            ajax: { async: false },
             username: username,
             password: password
         });
@@ -27,34 +26,34 @@ function XiVOAuth(host) {
             backend: backend,
             expiration: expiration
         }).done(function (data) {
-            return data;
+            callback(data);
         });
-        return data.responseJSON;
     }
 
-    this.logout = function(token) {
+    this.logout = function(token, callback) {
         client = this.connect();
 
         client.add('token', {
             stripTrailingSlash: true,
-            ajax: { async: false,
-                    headers: { 'X-Auth-Token': token }
+            ajax: { headers: { 'X-Auth-Token': token }
                   }
         });
 
-        return client.token.del(token);
+        client.token.del(token).done(function(data) {
+            callback(data);
+        });
     }
 
-    this.backend = function() {
+    this.backend = function(callback) {
         client = this.connect();
 
         client.add('backends', {
             stripTrailingSlash: true,
-            stringifyData: true,
-            ajax: { async: false }
+            stringifyData: true
         });
 
-        data = client.backends.read().done();
-        return data.responseJSON;
+        client.backends.read().done(function(data) {
+            callback(data);
+        });
     }
 }

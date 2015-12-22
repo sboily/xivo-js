@@ -54,8 +54,7 @@ function XiVOAuth(host) {
 
         client.add('backends', {
             stripTrailingSlash: true,
-            stringifyData: true,
-            ajax: { timeout: 30000 }
+            stringifyData: true
         });
 
         client.backends.read().done(function(data) {

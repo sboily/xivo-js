@@ -45,6 +45,25 @@ XiVOCallControl.prototype._connect = function() {
 }
 
 /*
+ *  Make call
+ *  
+ *  @param token - valid token
+ *  @param call - dict with all call info
+ *  @public
+ */
+XiVOCallControl.prototype.make_call = function(token, call) {
+    client = this._connect();
+
+    client.add('calls', {
+        stripTrailingSlash: true,
+        stringifyData: true,
+        ajax: { headers: { 'X-Auth-Token': token } }
+    });
+
+    return client.calls.create(call);
+}
+
+/*
  *  Get calls
  *  
  *  @param token - valid token

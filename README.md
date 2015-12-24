@@ -11,7 +11,7 @@ Example:
   <script src="https://rawgit.com/sboily/xivo-js/master/src/auth.js"></script>
   <script>
     auth = new XiVOAuth();
-    auth.host = "192.168.1.1";
+    auth.host = "https://192.168.1.1:9497";
 
     backends = auth.backend();
     console.log(backends);

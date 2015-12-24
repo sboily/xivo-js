@@ -24,6 +24,7 @@ for the JavaScript code in this page.
 */
 
 DEFAULT_BACKEND = 'xivo_ws';
+API_VERSION = '0.1';
 
 /*
  * @class XiVOAuth
@@ -40,7 +41,7 @@ var XiVOAuth = function (host) {
  * @private
  */
 XiVOAuth.prototype._connect = function() {
-    host = this.host + "/0.1/"
+    host = this.host + "/" + API_VERSION + "/"
     return new $.RestClient(host);
 }
 
@@ -48,12 +49,9 @@ XiVOAuth.prototype._connect = function() {
  *  Login in service
  *  
  *  @param info - dict with username, password, backend and expiration
- *  @param callback - callback function if connection is success
- *  @param callback_defered - callback function if connection is unsuccessfull
- *
  *  @public
  */
-XiVOAuth.prototype.login = function(info, callback, callback_defered) {
+XiVOAuth.prototype.login = function(info) {
     client = this._connect();
     username = info.username;
     password = info.password;
@@ -75,13 +73,9 @@ XiVOAuth.prototype.login = function(info, callback, callback_defered) {
         password: password
     });
 
-    data = client.token.create({
+    return client.token.create({
         backend: backend,
         expiration: expiration
-    }).done(function (data) {
-        callback(data);
-    }).fail(function (data) {
-        callback_defered(data);
     });
 }
 
@@ -89,12 +83,9 @@ XiVOAuth.prototype.login = function(info, callback, callback_defered) {
  *  Logout from service
  *  
  *  @param token - valid token you want to logout
- *  @param callback - callback function if connection is success
- *  @param callback_defered - callback function if connection is unsuccessfull
- *
  *  @public
  */
-XiVOAuth.prototype.logout = function(token, callback, callback_defered) {
+XiVOAuth.prototype.logout = function(token) {
     client = this._connect();
 
     client.add('token', {
@@ -102,22 +93,15 @@ XiVOAuth.prototype.logout = function(token, callback, callback_defered) {
         ajax: { headers: { 'X-Auth-Token': token } }
     });
 
-    client.token.del(token).done(function(data) {
-        callback(data);
-    }).fail(function(data) {
-        callback_defered(data);
-    });
+    return client.token.del(token);
 }
 
 /*
  *  Get the all backends support by service
  *  
- *  @param callback - callback function if connection is success
- *  @param callback_defered - callback function if connection is unsuccessfull
- *
  *  @public
  */
-XiVOAuth.prototype.backend = function(callback, callback_defered) {
+XiVOAuth.prototype.backend = function() {
     client = this._connect();
 
     client.add('backends', {
@@ -125,9 +109,5 @@ XiVOAuth.prototype.backend = function(callback, callback_defered) {
         stringifyData: true
     });
 
-    client.backends.read().done(function(data) {
-        callback(data);
-    }).fail(function(data) {
-        callback_defered(data);
-    });
+    return client.backends.read();
 }

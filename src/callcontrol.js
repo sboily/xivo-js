@@ -1,139 +1,225 @@
-function XiVOCallControl(host) {
+/*
+@licstart  The following is the entire license notice for the 
+JavaScript code in this page.
+
+Copyright (C) 2015  Sylvain Boily
+
+The JavaScript code in this page is free software: you can
+redistribute it and/or modify it under the terms of the GNU
+General Public License (GNU GPL) as published by the Free Software
+Foundation, either version 3 of the License, or (at your option)
+any later version.  The code is distributed WITHOUT ANY WARRANTY;
+without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
+
+As additional permission under GNU GPL version 3 section 7, you
+may distribute non-source (e.g., minimized or compacted) forms of
+that code without the copy of the GNU GPL normally required by
+section 4, provided you include this license notice and a URL
+through which recipients can access the Corresponding Source.
+
+
+@licend  The above is the entire license notice
+for the JavaScript code in this page.
+*/
+
+API_VERSION = '1.0';
+
+/*
+ * @class XiVOAuth
+ *
+ * @public
+ */
+var XiVOCallControl = function (host) {
     this.host = host;
+}
 
-    this.connect = function(host) {
-        host = this.host + "/1.0/"
-        return new $.RestClient(host);
-    }
+/*
+ * Connection to the REST API
+ *
+ * @private
+ */
+XiVOCallControl.prototype._connect = function() {
+    host = this.host + "/" + API_VERSION + "/"
+    return new $.RestClient(host);
+}
 
-    this.get_calls = function(token, application, instance) {
-        client = this.connect();
+/*
+ *  Get calls
+ *  
+ *  @param token - valid token
+ *  @param application - filter by application
+ *  @param instance - filter by instance
+ *  @public
+ */
+XiVOCallControl.prototype.get_calls = function(token, application, instance) {
+    client = this._connect();
 
-        client.add('calls', {
-            stripTrailingSlash: true,
-            stringifyData: true,
-            ajax: { async: false,
-                    headers: { 'X-Auth-Token': token }
-                  }
-        });
+    client.add('calls', {
+        stripTrailingSlash: true,
+        stringifyData: true,
+        ajax: { headers: { 'X-Auth-Token': token } }
+    });
 
-        data = client.calls.read({
+    return client.calls.read({
             application: application,
             application_instance: instance
-        }).done(function (data) {});
+    });
+}
 
-        return data.responseJSON;
-    }
+/*
+ *  Get incoming calls
+ *  
+ *  @param token - valid token
+ *  @param incoming_id - Id of the incoming queue
+ *  @public
+ */
+XiVOCallControl.prototype.get_incoming_calls = function(token, incoming_id) {
+    client = this._connect();
 
-    this.get_incoming_calls = function(token, incoming_id) {
-        client = this.connect();
+    client.add('incoming', {
+        ajax: { async: false,
+                headers: { 'X-Auth-Token': token }
+              }
+    });
 
-        client.add('incoming', {
-            ajax: { async: false,
-                    headers: { 'X-Auth-Token': token }
-                  }
-        });
+    client.incoming.add('calls', {
+        stripTrailingSlash: true,
+        isSingle: true
+    });
 
-        client.incoming.add('calls', {
-            stripTrailingSlash: true,
-            isSingle: true
-        });
+    return client.incoming.calls.read(incoming_id);
+}
 
-        data = client.incoming.calls.read(incoming_id)
-                                    .done(function (data) {});
+/*
+ *  Get holding calls
+ *  
+ *  @param token - valid token
+ *  @param holding_id - Id of the waiting queue
+ *  @public
+ */
+XiVOCallControl.prototype.get_holding_calls = function(token, holding_id) {
+    client = this._connect();
 
-        return data.responseJSON;
-    }
+    client.add('hold', {
+        ajax: { headers: { 'X-Auth-Token': token } }
+    });
 
-    this.get_holding_calls = function(token, holding_id) {
-        client = this.connect();
+    client.hold.add('calls', {
+        stripTrailingSlash: true,
+        isSingle: true
+    });
 
-        client.add('hold', {
-            ajax: { async: false,
-                    headers: { 'X-Auth-Token': token }
-                  }
-        });
+    return client.hold.calls.read(holding_id);
+}
 
-        client.hold.add('calls', {
-            stripTrailingSlash: true,
-            isSingle: true
-        });
+/*
+ *  Hangup a call
+ *  
+ *  @param token - valid token
+ *  @param call_id - Id of the channel
+ *  @public
+ */
+XiVOCallControl.prototype.hangup = function(token, call_id) {
+    client = this._connect();
 
-        data = client.hold.calls.read(holding_id)
-                                .done(function (data) {});
+    client.add('calls', {
+        stripTrailingSlash: true,
+        stringifyData: true,
+        ajax: { headers: { 'X-Auth-Token': token } }
+    });
 
-        return data.responseJSON;
-    }
+    return client.calls.del(call_id);
+}
 
-    this.hangup = function(token, call_id) {
-        client = this.connect();
+/*
+ *  Answer a call
+ *  
+ *  @param token - valid token
+ *  @param call_id - Id of the channel
+ *  @param uuid - uuuid of the user
+ *  @public
+ */
+XiVOCallControl.prototype.answer = function(token, call_id, uuid) {
+    client = this._connect();
 
-        client.add('calls', {
-            stripTrailingSlash: true,
-            stringifyData: true,
-            ajax: { headers: { 'X-Auth-Token': token } }
-        });
+    source = { source: { user: uuid } }
 
-        client.calls.del(call_id);
+    client.add('calls', {
+        stripTrailingSlash: true,
+        stringifyData: true,
+        ajax: { headers: { 'X-Auth-Token': token } }
+    });
 
-    }
+    client.calls.add('answer', {
+        stripTrailingSlash: true,
+        isSingle: true
+     });
 
-    this.answer = function(token, call_id, uuid) {
-        client = this.connect();
+    return client.calls.answer.create(call_id, source);
+}
 
-        source = { source: { user: uuid } }
+/*
+ *  Get incoming calls
+ *  
+ *  @param token - valid token
+ *  @param holding_id - Id of the waiting queue
+ *  @public
+ */
+XiVOCallControl.prototype.create_hold_queue = function(token, holding_id) {
+    client = this._connect();
 
-        client.add('calls', {
-            stripTrailingSlash: true,
-            stringifyData: true,
-            ajax: { headers: { 'X-Auth-Token': token } }
-        });
+    client.add('hold', {
+        stripTrailingSlash: true,
+        stringifyData: true,
+        ajax: { headers: { 'X-Auth-Token': token } }
+    });
 
-        client.calls.add('answer', {
-            stripTrailingSlash: true,
-            isSingle: true
-         });
+    client.hold.create(holding_id, {
+      moh: 'default'
+    });
+}
 
-        client.calls.answer.create(call_id, source);
-    }
+/*
+ *  Hold call
+ *  
+ *  @param token - valid token
+ *  @param holding_id - Id of the waiting queue
+ *  @param call_id - Id of the channel
+ *  @public
+ */
+XiVOCallControl.prototype.hold = function(token, holding_id, call_id) {
+    client = this._connect();
 
-    this.create_hold_queue = function(token, holding_id) {
-        client = this.connect();
+    client.add('hold', {
+        ajax: { headers: { 'X-Auth-Token': token } }
+    });
 
-        client.add('hold', {
-            stripTrailingSlash: true,
-            stringifyData: true,
-            ajax: { headers: { 'X-Auth-Token': token } }
-        });
+    client.hold.add('calls', {
+        stripTrailingSlash: true
+    });
 
-        client.hold.create(holding_id, {
-          moh: 'default'
-        });
-    }
+    return client.hold.calls.update(holding_id, call_id);
+}
 
-    this.hold = function(token, holding_id, call_id) {
-        client = this.connect();
+/*
+ *  Unhold call
+ *  
+ *  @param token - valid token
+ *  @param incoming_id - Id of the incoming queue
+ *  @param call_id - Id of the channel
+ *  @public
+ */
+XiVOCallControl.prototype.unhold = function(token, incoming_id, call_id) {
+    client = this._connect();
 
-        client.add('hold', {
-            ajax: { headers: { 'X-Auth-Token': token } }
-        });
+    client.add('incoming', {
+        ajax: { headers: { 'X-Auth-Token': token } }
+    });
 
-        client.hold.add('calls', {
-            stripTrailingSlash: true
-        });
-        client.hold.calls.update(holding_id, call_id);
-    }
+    client.incoming.add('calls', {
+        stripTrailingSlash: true
+    });
 
-    this.unhold = function(token, incoming_id, call_id) {
-        client = this.connect();
-
-        client.add('incoming', {
-            ajax: { headers: { 'X-Auth-Token': token } }
-        });
-
-        client.incoming.add('calls', {
-            stripTrailingSlash: true
-        });
-        client.incoming.calls.update(incoming_id, call_id);
-    }
+    return client.incoming.calls.update(incoming_id, call_id);
 }

@@ -9,6 +9,7 @@ Example:
   <script src="https://jpillora.com/jquery.rest/dist/1/jquery.rest.min.js"></script>
   <script src="https://rawgit.com/sboily/xivo-js/master/src/auth.js"></script>
 
+```
   <script>
     auth = new XiVOAuth();
     auth.host = "192.168.1.1";
@@ -34,6 +35,7 @@ Example:
     auth.logout(token).done(func_success).fail(func_fail);
     
   </script>
+```
 
 xivo-ctid-ng
 ============

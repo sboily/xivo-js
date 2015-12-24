@@ -14,7 +14,7 @@ Example:
     auth = new XiVOAuth();
     auth.host = "192.168.1.1";
 
-    backends = auth.backends();
+    backends = auth.backend();
     console.log(backends);
 
     c = { username: 'test',

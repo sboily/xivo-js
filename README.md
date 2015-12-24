@@ -33,7 +33,6 @@ Example:
     }
 
     auth.logout(token).done(func_success).fail(func_fail);
-    
   </script>
 ```
 

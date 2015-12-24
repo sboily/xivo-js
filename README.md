@@ -5,11 +5,10 @@ Javascript library using rest client from : https://github.com/jpillora/jquery.r
 
 Example:
 
+```
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
   <script src="https://jpillora.com/jquery.rest/dist/1/jquery.rest.min.js"></script>
   <script src="https://rawgit.com/sboily/xivo-js/master/src/auth.js"></script>
-
-```
   <script>
     auth = new XiVOAuth();
     auth.host = "192.168.1.1";

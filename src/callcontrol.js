@@ -23,7 +23,6 @@ through which recipients can access the Corresponding Source.
 for the JavaScript code in this page.
 */
 
-API_VERSION = '1.0';
 
 /*
  * @class XiVOAuth
@@ -32,6 +31,7 @@ API_VERSION = '1.0';
  */
 var XiVOCallControl = function (host) {
     this.host = host;
+    this.api_version = '1.0';
 }
 
 /*
@@ -40,7 +40,7 @@ var XiVOCallControl = function (host) {
  * @private
  */
 XiVOCallControl.prototype._connect = function() {
-    host = this.host + "/" + API_VERSION + "/"
+    host = this.host + "/" + this.api_version + "/"
     return new $.RestClient(host);
 }
 

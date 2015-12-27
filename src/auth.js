@@ -23,9 +23,6 @@ through which recipients can access the Corresponding Source.
 for the JavaScript code in this page.
 */
 
-DEFAULT_BACKEND = 'xivo_ws';
-API_VERSION = '0.1';
-
 /*
  * @class XiVOAuth
  *
@@ -33,6 +30,8 @@ API_VERSION = '0.1';
  */
 var XiVOAuth = function (host) {
     this.host = host;
+    this.api_version = '0.1';
+    this.default_backend = 'xivo_ws';
 }
 
 /*
@@ -41,7 +40,7 @@ var XiVOAuth = function (host) {
  * @private
  */
 XiVOAuth.prototype._connect = function() {
-    host = this.host + "/" + API_VERSION + "/"
+    host = this.host + "/" + this.api_version + "/"
     return new $.RestClient(host);
 }
 
@@ -63,7 +62,7 @@ XiVOAuth.prototype.login = function(info) {
     }
 
     if (backend == null) {
-        backend = DEFAULT_BACKEND;
+        backend = this.default_backend;
     }
 
     client.add('token', {

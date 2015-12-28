@@ -162,20 +162,16 @@ XiVOCallControl.prototype.hangup = function(token, call_id) {
 XiVOCallControl.prototype.answer = function(token, call_id, uuid) {
     client = this._connect();
 
-    source = { source: { user: uuid } }
-
     client.add('calls', {
         stripTrailingSlash: true,
         stringifyData: true,
         ajax: { headers: { 'X-Auth-Token': token } }
     });
 
-    client.calls.add('answer', {
-        stripTrailingSlash: true,
-        isSingle: true
+    client.calls.add('user', {
      });
 
-    return client.calls.answer.create(call_id, source);
+    return client.calls.user.update(call_id, uuid);
 }
 
 /*

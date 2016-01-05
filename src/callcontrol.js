@@ -102,9 +102,7 @@ XiVOCallControl.prototype.get_call = function(token, call_id) {
         ajax: { headers: { 'X-Auth-Token': token } }
     });
 
-    return client.calls.read({
-            call_id: call_id
-    });
+    return client.calls.read(call_id);
 }
 
 /*

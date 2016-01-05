@@ -87,6 +87,27 @@ XiVOCallControl.prototype.get_calls = function(token, application, instance) {
 }
 
 /*
+ *  Get a call info
+ *  
+ *  @param token - valid token
+ *  @param call_id - a call id
+ *  @public
+ */
+XiVOCallControl.prototype.get_call = function(token, call_id) {
+    client = this._connect();
+
+    client.add('calls', {
+        stripTrailingSlash: true,
+        stringifyData: true,
+        ajax: { headers: { 'X-Auth-Token': token } }
+    });
+
+    return client.calls.read({
+            call_id: call_id
+    });
+}
+
+/*
  *  Get incoming calls
  *  
  *  @param token - valid token

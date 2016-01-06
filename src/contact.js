@@ -61,5 +61,5 @@ XiVODird.prototype.lookup = function(token, profile, term) {
 
     client.directories.add('lookup');
 
-    return client.directories.lookup.read({term: term});
+    return client.directories.lookup.read({term:term});
 }

@@ -280,7 +280,9 @@ XiVOCallControl.prototype.blind_transfer = function(token, originator_call_id, c
     });
 
     client.calls.add('transfer');
-    client.calls.transfer.add('blind');
+    client.calls.transfer.add('blind', {
+        stripTrailingSlash: true
+    });
 
     return client.calls.transfer.blind.create(originator_call_id, call_id, user);
 }

@@ -187,8 +187,7 @@ XiVOCallControl.prototype.answer = function(token, call_id, uuid) {
         ajax: { headers: { 'X-Auth-Token': token } }
     });
 
-    client.calls.add('user', {
-     });
+    client.calls.add('user');
 
     return client.calls.user.update(call_id, uuid);
 }
@@ -273,7 +272,7 @@ XiVOCallControl.prototype.blind_transfer = function(token, originator_call_id, c
     user = { destination: {
                  user: uuid
                  }
-           }
+           };
 
     client.add('calls', {
         stripTrailingSlash: true,
@@ -304,7 +303,7 @@ XiVOCallControl.prototype.send_message = function(token, from, to, msg, alias) {
              to: to,
              msg: msg,
              alias: alias
-           }
+           };
 
     client.add('chat', {
         stringifyData: true,

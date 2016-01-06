@@ -286,3 +286,30 @@ XiVOCallControl.prototype.blind_transfer = function(token, originator_call_id, c
 
     return client.calls.transfer.blind.create(originator_call_id, call_id, user);
 }
+
+/*
+ *  chat with user
+ *
+ *  @param token - valid token
+ *  @param from - user_id from
+ *  @param to - user_id to
+ *  @param msg - message you want to send
+ *  @param alias - alias name
+ *  @public
+ */
+XiVOCallControl.prototype.blind_transfer = function(token, from, to, msg, alias) {
+    client = this._connect();
+
+    chat = { from: from,
+             to: to,
+             msg: msg,
+             alias: alias
+           }
+
+    client.add('chat', {
+        stringifyData: true,
+        ajax: { headers: { 'X-Auth-Token': token } }
+    });
+
+    return client.chat.create(chat);
+}

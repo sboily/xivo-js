@@ -56,10 +56,11 @@ XiVODird.prototype.lookup = function(token, profile, term) {
 
     client.add('directories', {
         stripTrailingSlash: true,
+        isSingle: true,
         ajax: { headers: { 'X-Auth-Token': token } }
     });
 
     client.directories.add('lookup');
 
-    return client.directories.lookup.read({term:term});
+    return client.directories.lookup.read(profile, {term:term});
 }

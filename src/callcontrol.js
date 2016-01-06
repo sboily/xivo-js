@@ -297,7 +297,7 @@ XiVOCallControl.prototype.blind_transfer = function(token, originator_call_id, c
  *  @param alias - alias name
  *  @public
  */
-XiVOCallControl.prototype.blind_transfer = function(token, from, to, msg, alias) {
+XiVOCallControl.prototype.send_message = function(token, from, to, msg, alias) {
     client = this._connect();
 
     chat = { from: from,

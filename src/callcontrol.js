@@ -279,10 +279,10 @@ XiVOCallControl.prototype.blind_transfer = function(token, originator_call_id, c
         ajax: { headers: { 'X-Auth-Token': token } }
     });
 
-    client.calls.add('transfer');
-    client.calls.transfer.add('blind', {
+    client.calls.add('transfer', {
         stripTrailingSlash: true
     });
+    client.calls.transfer.add('blind');
 
     return client.calls.transfer.blind.create(originator_call_id, call_id, user);
 }

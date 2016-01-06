@@ -257,3 +257,30 @@ XiVOCallControl.prototype.unhold = function(token, incoming_id, call_id) {
 
     return client.incoming.calls.update(incoming_id, call_id);
 }
+
+/*
+ *  blind transfer call
+ *
+ *  @param token - valid token
+ *  @param originator_call_id - Call ID of the originator
+ *  @param call_id - Call Id you want to transfer
+ *  @param uuid - Uuid of the user you want to transfer
+ *  @public
+ */
+XiVOCallControl.prototype.blind_transfer = function(token, originator_call_id, call_id, uuid) {
+    client = this._connect();
+
+    user = { destination: {
+                 user: uuid
+                 }
+           }
+
+    client.add('calls', {
+        ajax: { headers: { 'X-Auth-Token': token } }
+    });
+
+    client.calls.add('transfer');
+    client.calls.transfer.add('blind');
+
+    return client.calls.transfer.blind.create(originator_call_id, call_id, user);
+}

@@ -187,8 +187,7 @@ XiVOCallControl.prototype.answer = function(token, call_id, uuid) {
         ajax: { headers: { 'X-Auth-Token': token } }
     });
 
-    client.calls.add('user', {
-     });
+    client.calls.add('user');
 
     return client.calls.user.update(call_id, uuid);
 }
@@ -273,7 +272,7 @@ XiVOCallControl.prototype.blind_transfer = function(token, originator_call_id, c
     user = { destination: {
                  user: uuid
                  }
-           }
+           };
 
     client.add('calls', {
         stripTrailingSlash: true,
@@ -285,4 +284,31 @@ XiVOCallControl.prototype.blind_transfer = function(token, originator_call_id, c
     client.calls.transfer.add('blind');
 
     return client.calls.transfer.blind.create(originator_call_id, call_id, user);
+}
+
+/*
+ *  chat with user
+ *
+ *  @param token - valid token
+ *  @param from - user_id from
+ *  @param to - user_id to
+ *  @param msg - message you want to send
+ *  @param alias - alias name
+ *  @public
+ */
+XiVOCallControl.prototype.send_message = function(token, from, to, msg, alias) {
+    client = this._connect();
+
+    chat = { from: from,
+             to: to,
+             msg: msg,
+             alias: alias
+           };
+
+    client.add('chat', {
+        stringifyData: true,
+        ajax: { headers: { 'X-Auth-Token': token } }
+    });
+
+    return client.chat.create(chat);
 }

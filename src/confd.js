@@ -60,3 +60,21 @@ XiVOConfd.prototype.get_user = function(token, uuid) {
 
     return client.users.read(uuid);
 }
+
+/*
+ *  Get confd infos
+ *  
+ *  @param token - valid token
+ *  @public
+ */
+XiVOConfd.prototype.infos = function(token) {
+    client = this._connect();
+
+    client.add('infos', {
+        stripTrailingSlash: true,
+        isSingle: true,
+        ajax: { headers: { 'X-Auth-Token': token } }
+    });
+
+    return client.infos.read();
+}

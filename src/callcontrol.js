@@ -312,3 +312,26 @@ XiVOCallControl.prototype.send_message = function(token, from, to, msg, alias) {
 
     return client.chat.create(chat);
 }
+
+/*
+ *  Presence
+ *
+ *  @param token - valid token
+ *  @param user_id - user_id from
+ *  @param status_id - id of the status
+ *  @public
+ */
+XiVOCallControl.prototype.update_presence = function(token, user_id, status_id) {
+    client = this._connect();
+
+    presence = { id: user_id,
+                 status: status_id
+               };
+
+    client.add('presence', {
+        stringifyData: true,
+        ajax: { headers: { 'X-Auth-Token': token } }
+    });
+
+    return client.presence.update(presence);
+}

@@ -324,8 +324,8 @@ XiVOCallControl.prototype.send_message = function(token, from, to, msg, alias) {
 XiVOCallControl.prototype.update_presence = function(token, user_id, status_id) {
     client = this._connect();
 
-    presence = { id: user_id,
-                 status: status_id
+    presence = { user_id: user_id,
+                 status_id: status_id
                };
 
     client.add('presence', {

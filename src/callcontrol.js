@@ -318,14 +318,14 @@ XiVOCallControl.prototype.send_message = function(token, from, to, msg, alias) {
  *
  *  @param token - valid token
  *  @param user_id - user_id from
- *  @param status_id - id of the status
+ *  @param status_name - name of the status
  *  @public
  */
-XiVOCallControl.prototype.update_presence = function(token, user_id, status_id) {
+XiVOCallControl.prototype.update_presence = function(token, user_id, status_name) {
     client = this._connect();
 
     presence = { user_id: user_id,
-                 status_id: status_id
+                 status_name: status_name
                };
 
     client.add('presence', {

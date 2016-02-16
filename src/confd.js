@@ -78,3 +78,26 @@ XiVOConfd.prototype.infos = function(token) {
 
     return client.infos.read();
 }
+
+/*
+ *  Get confd user line param
+ *
+ *  @param token - valid token
+ *  @param uuid - valid uuid
+ *  @public
+ */
+XiVOConfd.prototype.get_user_associated_line = function(token, uuid) {
+    client = this._connect();
+
+    client.add('users', {
+        ajax: { headers: { 'X-Auth-Token': token } }
+    });
+
+    client.users.add('lines', { isSingle: true})
+                .add('main', { isSingle: true})
+                .add('associated', { isSingle: true})
+                .add('endpoints', { isSingle: true})
+                .add('sip', { isSingle: true, stripTrailingSlash: true});
+
+    return client.users.lines.main.associated.endpoints.sip.read(uuid);
+}

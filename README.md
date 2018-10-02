@@ -1,3 +1,10 @@
+!!!!!!!!!!!!!!!!!!!!
+
+DEPRECATED: PLEASE DO NOT USE THIS LIBRARY. CHECK OUR WAZO-JS-SDK https://github.com/wazo-pbx/wazo-js-sdk
+
+!!!!!!!!!!!!!!!!!!!!
+
+
 xivo-auth
 =========
 
